@@ -34,7 +34,7 @@ describe("./musicians endpoint", () => {
   test('Can create single musician by /musicians/:id', async () => {
     const newMusician = { name: "Justin Berg", instrument: "Guitar"};
     const response = await request(app).post('/musicians').send(newMusician);
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(201);
     expect(response.body.name).toBe(newMusician.name);
   });
   
