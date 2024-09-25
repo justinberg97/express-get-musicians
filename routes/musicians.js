@@ -1,15 +1,9 @@
 const express = require("express");
-const app = express();
-const { Musician } = require("../models/index");
-const { db } = require("../db/connection");
-
-const port = 3000;
-app.use(express.json());
+const router = express.Router()
+const Musician = require("../models/index");
 
 //TODO: Create a GET /musicians route to return all musicians
-
-
-app.get("/musicians", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const musicians = await Musician.findAll();
     res.json(musicians);
@@ -19,7 +13,7 @@ app.get("/musicians", async (req, res) => {
   }
 });
 
-app.get("/musicians/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const number = req.params.id;
     const musician = await Musician.findByPk(number);
@@ -34,17 +28,17 @@ app.get("/musicians/:id", async (req, res) => {
   }
 });
 
-app.post("/musicians", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const musician = await Musician.create(req.body);
-    res.json(musician);
+    res.status(201).json(musician);
   } catch (error) {
     console.error("Error creating musician", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.put("/musicians/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const updatedMusician = await Musician.update(req.body, {
       where: { id: req.params.id },
@@ -56,7 +50,7 @@ app.put("/musicians/:id", async (req, res) => {
   }
 });
 
-app.delete("/musicians/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const deletedMusician = await Musician.destroy({
       where: { id: req.params.id },
@@ -68,4 +62,4 @@ app.delete("/musicians/:id", async (req, res) => {
   }
 });
 
-module.exports = app;
+module.exports = router;
