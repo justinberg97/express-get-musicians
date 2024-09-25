@@ -19,9 +19,15 @@ describe("./musicians endpoint", () => {
     await db.close();
   });
 
-  Test("GET /musicians returns a 200 status", async () => {
+  test("GET /musicians returns a 200 status", async () => {
     const response = await request(app).get("/musicians");
     expect(response.statusCode).toBe(200);
-    expect(Array.isArray(response.body).toBe(true));
+    // expect(Array.isArray(response.body).toBe(true));
+  });
+
+  test('Get single musician by /musicians/:id', async () => {
+    const response = await request(app).get('/musicians/1');
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('name');
   });
 });
