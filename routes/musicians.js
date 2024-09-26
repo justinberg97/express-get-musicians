@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router()
-const Musician = require("../models/index");
+const { Musician } = require("../models/index");
 
 //TODO: Create a GET /musicians route to return all musicians
 router.get("/", async (req, res) => {

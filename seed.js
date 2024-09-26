@@ -1,5 +1,4 @@
-const Musician = require("./models/index");
-const Band = require("./models/index");
+const  { Musician, Band } = require("./models/index");
 const { db } = require("./db/connection");
 const { seedMusician, seedBand } = require("./seedData");
 
