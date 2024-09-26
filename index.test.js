@@ -31,11 +31,13 @@ describe("./musicians endpoint", () => {
     expect(response.body).toHaveProperty('name');
   });
 
-  test('Can create single musician by /musicians/:id', async () => {
+  test('Can create single musician', async () => {
     const newMusician = { name: "Justin Berg", instrument: "Guitar"};
     const response = await request(app).post('/musicians').send(newMusician);
     expect(response.statusCode).toBe(201);
-    expect(response.body.name).toBe(newMusician.name);
+    expect(response.body).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name: newMusician.name, instrument: newMusician.instrument })])
+    );
   });
   
   test('Can update single musician by /musicians/:id', async () => {
@@ -51,5 +53,33 @@ describe("./musicians endpoint", () => {
     expect(response.statusCode).toBe(200);
     const deletedMusician = await Musician.findByPk(1);
     expect(deletedMusician).toBeNull();
-  })
+  });
+
+  test("should return an error if name is empty", async () => {
+    const response = await request(app).post("/musicians").send({
+        name: "",
+        instrument: "Guitar",
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.errors[0].msg).toBe("Name cannot be empty");
+});
+
+test("should return an error if instrument is empty", async () => {
+    const response = await request(app).post("/musicians").send({
+        name: "Justin",
+        instrument: "",
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.errors[0].msg).toBe("Instrument cannot be empty");
+
+});
+test("should return an error if both are empty", async () => {
+    const response = await request(app).post("/musicians").send({
+        name: "",
+        instrument: "",
+    });
+    expect(response.statusCode).toBe(400);
+    expect(response.body.errors.length).toBe(2);
+});
+
 });

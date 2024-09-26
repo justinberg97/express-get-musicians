@@ -1,5 +1,6 @@
 const express = require("express");
-const router = express.Router()
+const { check, validationResult } = require('express-validator');
+const router = express.Router();
 const { Musician } = require("../models/index");
 
 //TODO: Create a GET /musicians route to return all musicians
@@ -28,10 +29,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  try {
+router.post("/", 
+    
+    [
+        check("name").trim().notEmpty().withMessage("Name cannot be empty"),
+        check("instrument").trim().notEmpty().withMessage("Instrument cannot be empty"),
+    ],
+    async (req, res) => {
+  
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    try {
     const musician = await Musician.create(req.body);
-    res.status(201).json(musician);
+    const musicians = await Musician.findAll();
+    res.status(201).json(musicians);
   } catch (error) {
     console.error("Error creating musician", error);
     res.status(500).json({ error: "Internal Server Error" });
